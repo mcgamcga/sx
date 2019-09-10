@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.c.c.dao.LotteryHistoryDao" >
+    <resultMap id="BaseResultMap" type="com.c.c.bean.LotteryHistory" >
+        <id column="ID" property="id" jdbcType="VARCHAR" />
+        <result column="RED_ONE" property="redOne" jdbcType="DECIMAL" />
+        <result column="RED_TWO" property="redTwo" jdbcType="DECIMAL" />
+        <result column="RED_THREE" property="redThree" jdbcType="DECIMAL" />
+        <result column="RED_FOUR" property="redFour" jdbcType="DECIMAL" />
+        <result column="RED_FIVE" property="redFive" jdbcType="DECIMAL" />
+        <result column="RED_SIX" property="redSix" jdbcType="DECIMAL" />
+        <result column="BLUE_ONE" property="blueOne" jdbcType="DECIMAL" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+		ID, RED_ONE, RED_TWO, RED_THREE, RED_FOUR, RED_FIVE, RED_SIX, BLUE_ONE
+	</sql>
+
+    <select id="selectMax" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM LOTTERY_HISTORY ORDER BY ID desc limit 1
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM LOTTERY_HISTORY
+    </select>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM LOTTERY_HISTORY WHERE ID = #{id}
+    </select>
+
+    <select id="selectByRedAll" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM LOTTERY_HISTORY WHERE
+          RED_ONE = #{one} AND RED_TWO = #{two} AND RED_THREE = #{three}
+        AND RED_FOUR = #{four} AND RED_FIVE = #{five} AND RED_SIX = #{six}
+    </select>
+
+    <select id="selectAllDownFromId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM LOTTERY_HISTORY WHERE ID IN
+          <foreach collection="list" item="lh" open="(" separator="," close=")">
+              #{lh}
+          </foreach>
+    </select>
+
+    <select id="selectRedListOfAppointDown" resultType="int" >
+        SELECT  CAST((ID + 1) AS DECIMAL) FROM LOTTERY_HISTORY WHERE 1=1
+          <if test="location == 1">
+            AND RED_ONE = #{num}
+          </if>
+          <if test="location == 2">
+            AND RED_TWO = #{num}
+          </if>
+          <if test="location == 3">
+            AND RED_THREE = #{num}
+          </if>
+          <if test="location == 4">
+            AND RED_FOUR = #{num}
+          </if>
+          <if test="location == 5">
+            AND RED_FIVE = #{num}
+          </if>
+          <if test="location == 6">
+            AND RED_SIX = #{num}
+          </if>
+          AND ID <![CDATA[<]]> #{id}
+    </select>
+
+    <insert id="insert" parameterType="lotteryHistory">
+        INSERT INTO LOTTERY_HISTORY
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id!=null">
+                ID,
+            </if>
+            <if	test="redOne!=null">
+                RED_ONE,
+            </if>
+            <if test="redTwo!=null">
+                RED_TWO,
+            </if>
+            <if test="redThree!=null">
+                RED_THREE,
+            </if>
+            <if test="redFour!=null">
+                RED_FOUR,
+            </if>
+            <if test="redFive!=null">
+                RED_FIVE,
+            </if>
+            <if test="redSix!=null">
+                RED_SIX,
+            </if>
+            <if test="blueOne!=null">
+                BLUE_ONE,
+            </if>
+        </trim>
+        <trim prefix="values (" suffixOverrides="," suffix=")">
+            <if test="id!=null">
+                #{id},
+            </if>
+            <if	test="redOne!=null">
+                #{redOne},
+            </if>
+            <if test="redTwo!=null">
+                #{redTwo},
+            </if>
+            <if test="redThree!=null">
+                #{redThree},
+            </if>
+            <if test="redFour!=null">
+                #{redFour},
+            </if>
+            <if test="redFive!=null">
+                #{redFive},
+            </if>
+            <if test="redSix!=null">
+                #{redSix},
+            </if>
+            <if test="blueOne!=null">
+                #{blueOne},
+            </if>
+        </trim>
+    </insert>
+</mapper>
